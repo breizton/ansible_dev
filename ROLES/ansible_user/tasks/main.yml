@@ -1,0 +1,60 @@
+---
+
+- name: Add group
+  group:
+        name: ansible
+
+- name: Add user
+  user:
+        name: ansible
+        comment: user for ansible connexion
+        group: ansible
+        shell: /bin/bash
+        password: ans2017*
+        home: /home/ansible
+
+- name: Change User password age
+  shell: chage -M 99999 ansible
+
+- name: Generate key into the server
+  local_action: command ssh-keygen -f /root/.ssh/id_rsa -q -N '' -C ansible_server_ssh_root_key
+  args:
+    creates: /root/.ssh/id_rsa
+
+- name: Add autorized keys to the new user
+  authorized_key:
+        user: user
+        key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+
+- name: Set sudoers file rights to 0640
+  file: path=/etc/sudoers mode=0640
+
+- name: Add user in sudoers
+  lineinfile: dest=/etc/sudoers line='ansible ALL=(ALL) NOPASSWD:ALL'
+
+- name: Set sudoers file rights to 0440
+  file: path=/etc/sudoers mode=0440
+
+- name: Set sshd_config change configuration
+  replace: dest=/etc/ssh/sshd_config regexp={{item.regexp}} replace={{item.replace}}
+  with_items:
+    - { regexp: '^(PasswordAuthentication).*$', replace: '#\1' }
+    - { regexp: '^PubkeyAuthentication.*$', replace: 'PubkeyAuthentication yes' }
+    - { regexp: '^RSAAuthentication.*$', replace: 'RSAAuthentication yes' }
+    - { regexp: '^AllowGroups\s(.*)\sansible(.*)', replace: 'AllowGroups \1\2' }
+    - { regexp: '^(AllowGroups.*)', replace: '\1 ansible' }
+    - { regexp: '^AllowUsers\s(.*)\sansible(.*)', replace: 'AllowUsers \1\2' }
+    - { regexp: '^(AllowUsers.*)', replace: '\1 ansible' }
+    - { regexp: '^ClientAliveInterval 300$', replace: 'ClientAliveInterval 20000' }
+    - { regexp: '^ClientAliveCountMax 0$', replace: 'ClientAliveCountMax 20000' }
+
+- name: restart sshd service
+  service: name=sshd state=restarted
+
+- name: unset root timeout
+  replace: dest=/root/{{item}} regexp='^TMOUT.*$' replace='#TMOUT.*$'
+  with_items:
+    - .bash_profile
+    - .bashrc
+    - .cshrc
+    - .tcshrc

@@ -1,0 +1,16 @@
+---
+- name: add a proxy to /etc/yum.conf
+  lineinfile:
+     path: /etc/yum.conf
+     line: "proxy=http://{{ proxy_ip }}:{{ proxy_port }}"
+
+- name: configure G02R03C00 repository
+  template:
+     src: templates/common-G02R03C00.repo
+     dest: /etc/yum.repos.d/common-G02R03C00.repo
+
+- name: enable de repository with orange-yumconf
+  shell: orange-yumconf -e {{ item }}
+  with_items:
+     - common-rhel6
+     - common-G02R03C00

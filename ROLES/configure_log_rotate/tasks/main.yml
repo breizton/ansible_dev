@@ -1,0 +1,10 @@
+---
+- name: configure logrotate.conf in /etc/logrotate.conf
+  template:
+     src: templates/logrotate.conf
+     dest: /etc/logrotate.conf
+
+- name: configure http in /etc/logrotate.d/httpd
+  template:
+     src: templates/http
+     dest: /etc/logrotate.d/httpd

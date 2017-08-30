@@ -1,0 +1,6 @@
+[G02R03C00]
+name=Oracle Linux $releasever Latest ($basearch)
+baseurl=http://public-yum.oracle.com/repo/OracleLinux/OL6/latest/$basearch/
+gpgkey=file://etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
+gpgcheck=0
+enabled=1

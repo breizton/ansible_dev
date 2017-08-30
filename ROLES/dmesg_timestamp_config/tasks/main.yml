@@ -1,0 +1,15 @@
+---
+- name: enable dmeseg by adding Y to /sys/module/printk/parameters/time
+  template:
+     src: templates/time
+     dest: /sys/module/printk/parameters/time
+
+- name: add the script dmesgtime.sh to /images/
+  template:
+     src: templates/dmesgtime.sh
+     dest: /images/dmesgtime.sh
+     mode: '0755'
+
+- name: configuring /boot/grub/grub.conf
+  debug:
+     msg: "I don't know what to do in this step"

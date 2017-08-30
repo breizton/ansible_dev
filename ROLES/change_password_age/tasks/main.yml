@@ -1,0 +1,3 @@
+---
+- name: remove user password age
+  shell: chage -M -1 root

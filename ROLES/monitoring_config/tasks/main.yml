@@ -1,0 +1,18 @@
+---
+- name: create /opt/vimtv/scripts directory
+  file:
+     path: /opt/vimtv/scripts
+     state: directory
+     recurse: yes
+
+- name: create /opt/vimtv/scripts/monitoring_free.sh
+  template:
+     src: templates/monitoring_free.sh
+     dest: /opt/vimtv/scripts/monitoring_free.sh
+     mode: '0776'
+
+- name: add the script job to the crontab
+  cron:
+     job: /opt/vimtv/scripts/monitoring_free.sh
+     minute: "*/1"
+     hour: "16-23"

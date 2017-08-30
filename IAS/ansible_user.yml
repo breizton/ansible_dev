@@ -1,0 +1,14 @@
+---
+- name: "Create a user for ansible and exchange ssh keys"
+  hosts: all
+  user: osadmin
+  become: true
+  become_user: root
+  become_method: su
+
+#----------------------------------------------------------------------------------------------------
+# Roles to play
+#----------------------------------------------------------------------------------------------------
+
+  roles:
+    - ../ROLES/ansible_user

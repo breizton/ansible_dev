@@ -1,0 +1,20 @@
+- name: "Update kernel"
+  hosts: all
+  user: ansible
+  become: true
+
+  #----------------------------------------------------------------------------------------------------
+  # Roles to play
+  #----------------------------------------------------------------------------------------------------
+
+  roles:
+    - ../ROLES/update_kernel
+    - ../ROLES/reboot_server
+    - ../ROLES/configure_yum
+    - ../ROLES/change_password_age
+    - ../ROLES/create_var_log_lv
+    - ../ROLES/reboot_server
+    - ../ROLES/configure_log_rotate
+    - ../ROLES/ntp_config
+    - ../ROLES/monitoring_config
+    - ../ROLES/dmesg_timestamp_config

@@ -1,0 +1,29 @@
+---
+- name: create zip archive of /var/log
+  shell: zip -r log.zip log
+  args:
+    chdir: /tmp/var
+
+- name: create var_log_lv logical volume
+  lvol:
+     vg: rootvg
+     lv: var_log_lv
+     size: 1G
+
+- name: format the partition as ext4 filesystem
+  filesystem:
+     fstype: ext4
+     dev: /dev/mapper/rootvg-var_log_lv
+
+- name: add the lv to fstab and mount it
+  mount:
+     src: /dev/mapper/rootvg-var_log_lv
+     path: /var/log/
+     fstype: ext4
+     state: mounted
+
+- name: unarchive log.zip on the mount lv /var/log
+  unarchive:
+    src: /tmp/var/log.zip
+    dest: /tmp/var/
+    remote_src: True
