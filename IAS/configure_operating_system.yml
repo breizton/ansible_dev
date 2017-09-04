@@ -1,4 +1,4 @@
-- name: "Update kernel"
+- name: "Configure OS"
   hosts: all
   user: ansible
   become: true
